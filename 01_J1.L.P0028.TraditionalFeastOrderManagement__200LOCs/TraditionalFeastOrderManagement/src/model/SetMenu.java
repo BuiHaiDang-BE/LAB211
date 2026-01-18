@@ -56,11 +56,15 @@ public class SetMenu {
         this.ingredients = ingredients;
     }
 
+//    @Override
+//    public String toString() {
+//        return "SetMenu{" + "menuId=" + menuId + ", menuName=" + menuName + ", price=" + price + ", ingredients=" + ingredients + '}';
+//    }
+   
     @Override
     public String toString() {
-        return "SetMenu{" + "menuId=" + menuId + ", menuName=" + menuName + ", price=" + price + ", ingredients=" + ingredients + '}';
+        return String.format("| %-7s | %-25s | %10.0f | %-50s |", 
+                             menuId, menuName, price, ingredients.replace("\n", " "));
     }
-   
-    
 
 }

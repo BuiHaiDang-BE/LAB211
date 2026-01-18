@@ -8,28 +8,32 @@ package model;
  *
  * @author Bui_Hai_Dang
  */
-public class Customer {
-    private String customerCode;
+import java.io.Serializable;
+
+public class Customer implements Serializable {
+
+    private String id;
     private String name;
-    private String phoneNumber;
+    private String phone;
     private String email;
 
     public Customer() {
     }
 
-    public Customer(String customerCode, String name, String phoneNumber, String email) {
-        this.customerCode = customerCode;
+    public Customer(String id, String name, String phone, String email) {
+        this.id = id;
         this.name = name;
-        this.phoneNumber = phoneNumber;
+        this.phone = phone;
         this.email = email;
     }
 
-    public String getCustomerCode() {
-        return customerCode;
+    
+    public String getId() {
+        return id;
     }
 
-    public void setCustomerCode(String customerCode) {
-        this.customerCode = customerCode;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -40,12 +44,12 @@ public class Customer {
         this.name = name;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getEmail() {
@@ -58,8 +62,11 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer{" + "customerCode=" + customerCode + ", name=" + name + ", phoneNumber=" + phoneNumber + ", email=" + email + '}';
+        return String.format("| %-10s | %-20s | %-12s | %-25s |", id, name, phone, email);
     }
-    
-    
 }
+//    @Override
+//    public String toString() {
+//        return "Customer{" + "customerCode=" + customerCode + ", name=" + name + ", phoneNumber=" + phoneNumber + ", email=" + email + '}';
+//    }
+
