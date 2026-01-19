@@ -4,6 +4,9 @@
  */
 package tool;
 
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 /**
@@ -23,7 +26,7 @@ public class Inputter {
         return sc.nextLine();
     }
 
-    public int IntAndLoop(String mess,String pattern) {
+    public int IntAndLoop(String mess, String pattern) {
         String temp = "";
         boolean isTrue = true;
         do {
@@ -33,7 +36,7 @@ public class Inputter {
                 System.out.println("Data is invalid. Please re-enter!");
             }
         } while (isTrue);
-       return Integer.parseInt(temp);
+        return Integer.parseInt(temp);
     }
 
     public String inputAndLoop(String mess, String pattern) {
@@ -48,4 +51,20 @@ public class Inputter {
         } while (isTrue);
         return res.trim();
     }
+
+    public Date getDate(String mess) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        sdf.setLenient(false);
+        while(true){
+            String input = getString(mess + "(dd/MM/yyyy): ");
+            if(input.isEmpty()) return null;
+            try {
+                return (Date) sdf.parse(input);
+            } catch (ParseException e) {
+                System.out.println("Date is inValid, please redo: ");
+            }
+        }
+    }
+
 }

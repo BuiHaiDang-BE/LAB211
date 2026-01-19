@@ -12,29 +12,35 @@ import model.Order;
 import tool.FileUtils;
 import java.util.ArrayList;
 import java.util.HashSet;
+import tool.Inputter;
 
 public class Orders extends HashSet<Order> implements Workable<Order> {
+
     private final String pathFile = "feast_order_service.dat";
-    private boolean isSaved = true;
+    Inputter inputter = new Inputter();
 
     @Override
     public void addNew(Order x) {
-        if (this.contains(x)) { 
+        if (this.contains(x)) {
             System.out.println("Duplicate Data!");
         } else {
             this.add(x);
-            isSaved = false;
+
             System.out.println("Order placed successfully.");
         }
     }
 
     @Override
-    public void update(Order x) { }
+    public void update(Order x) {
+    
+    }
 
     @Override
     public Order searchById(String id) {
         for (Order o : this) {
-            if (o.getOrderCode().equalsIgnoreCase(id)) return o;
+            if (o.getOrderCode().equalsIgnoreCase(id)) {
+                return o;
+            }
         }
         return null;
     }
@@ -47,11 +53,11 @@ public class Orders extends HashSet<Order> implements Workable<Order> {
     public void readFromFile() {
         this.clear();
         this.addAll(FileUtils.readFile(this.pathFile));
-        this.isSaved = true;
+
     }
 
     public void saveToFile() {
         FileUtils.saveToFile(new ArrayList<>(this), this.pathFile); // Chuyển sang List để ghi file [cite: 791]
-        this.isSaved = true;
+
     }
 }

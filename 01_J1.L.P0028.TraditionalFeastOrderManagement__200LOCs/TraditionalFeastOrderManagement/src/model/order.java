@@ -33,6 +33,10 @@ public class Order implements Serializable {
         this.eventDate = eventDate;
     }
 
+    public Order(String cId, Date date, String cId0, String mId, double price, int tables, double cost) {
+        
+    }
+
     private String generateOrderCode() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         return sdf.format(new Date());

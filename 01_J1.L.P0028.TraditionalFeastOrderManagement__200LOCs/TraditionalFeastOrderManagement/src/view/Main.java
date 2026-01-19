@@ -9,9 +9,7 @@ package view;
  * @author Bui_Hai_Dang
  */
 import controller.FeastController;
-import java.util.Date;
-import model.Order;
-import tool.Acceptable;
+
 
 public class Main {
 
@@ -51,7 +49,7 @@ public class Main {
                     fcontrol.placeFeastOrder();
                     break;
                 case 6:
-                    
+                    fcontrol.UpdateOrderInfor();
                     break;
                 case 7:
                     fcontrol.saveData();
