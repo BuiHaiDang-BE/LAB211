@@ -25,6 +25,7 @@ public class FeastController {
 
     private Customers customerList;
     private SetMenus menuList;
+    private SetMenu menu;
     private Orders orderList;
     private Inputter inputter;
     private Order order;
@@ -80,39 +81,46 @@ public class FeastController {
 
     public void placeFeastOrder() {
 
-        double cost = 0.0;
+    
         System.out.println("--- Place a Feast Order ---");
         if (customerList.isEmpty()) {
             System.out.println("Cusomer list is empty, please register");
+            return;
+        }
 
-        } else {
-            String cId = inputter.inputAndLoop("Enter Customer ID: ", Acceptable.CUS_ID_VALID);
-            if (cId.isEmpty()) {
-                System.out.println("Cannot be blank");
+        String cId = inputter.inputAndLoop("Enter Customer ID: ", Acceptable.CUS_ID_VALID);
+        if (cId.isEmpty()) {
+            System.out.println("Cannot be blank");
+            return;
+        }
 
-            }
+        Customer foundCust = customerList.searchById(cId);
+        if (foundCust == null) {
+            System.out.println("Customer not found!");
+            return;
+        }
 
-            Customer foundCust = customerList.searchById(cId);
-            if (foundCust == null) {
-                System.out.println("Customer not found!");
-            }
-
-            menuList.showMenuList();
-            String mId = inputter.getString("Enter Menu ID: ");
-            SetMenu foundMenu = menuList.get(mId);
-            if (foundMenu == null) {
-                System.out.println("Menu not found!");
-
-            } else {
-                int tables = inputter.IntAndLoop("Enter number of tables: ", Acceptable.POSITIVE_INT_VALID);
-                Date eventDate = inputter.getDate("Enter event date");
-                if (eventDate == null) {
-                    return;
-                }
-                cost = foundMenu.getPrice() * tables;
-                orderList.addNew(new Order(cId, new Date(), cId, mId, foundMenu.getPrice(), tables, cost));
-            }
-
+        menuList.showMenuList();
+        String mId = inputter.getString("Enter Menu ID: ");
+        SetMenu foundMenu = menuList.get(mId);
+        double price = foundMenu.getPrice();
+        if (foundMenu == null) {
+            System.out.println("Menu not found!");
+            return;
+        }
+        int tables = inputter.IntAndLoop("Enter number of tables: ", Acceptable.POSITIVE_INT_VALID);
+        double total = price * tables;
+        Date eventDate = inputter.getDate("Enter event date");
+        if (eventDate == null) {
+            System.out.println("Event date is required!");
+            return;
+        }
+        {
+            Order newOrder = new Order(cId, mId, tables, eventDate,price,total);
+            orderList.addNew(newOrder);
+            
+            System.out.println("-------------------------------------------------------");
+            System.out.println("Customer order information [Order ID: ]" + newOrder.getOrderCode());
             System.out.println("-------------------------------------------------------");
             System.out.println("Code            : " + foundCust.getId());
             System.out.println("Customer Name   : " + foundCust.getName());
@@ -123,7 +131,7 @@ public class FeastController {
             System.out.println("Code of Set Menu: " + foundMenu.getMenuId());
             System.out.println("Set menu name   : " + foundMenu.getMenuName());
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            System.out.println("Event date      : " + sdf.format(order.getEventDate()));
+            System.out.println("Event date      : " + sdf.format(newOrder.getEventDate()));
             System.out.printf("Price            : %,.0f Vnd\n", foundMenu.getPrice());
             System.out.println("Ingredients :");
             String raw = foundMenu.getIngredients().replace("\"", "");
@@ -132,41 +140,77 @@ public class FeastController {
                 System.out.println(" " + group.trim());
             }
             System.out.println("-------------------------------------------------------");
-            System.out.printf("Total cost      : %,.0f Vnd\n", cost);
+            System.out.printf("Total cost      : %,.0f Vnd\n", newOrder.getTotalCost());
             System.out.println("-------------------------------------------------------");
         }
     }
 
     public void UpdateOrderInfor() {
-        System.out.println("--- Update Order Information ---");
-        String code = inputter.inputAndLoop("Enter ID", Acceptable.CUS_ID_VALID);
-        Order foundOrder = orderList.searchById(code);
-
-        if (foundOrder == null) {
-            System.out.println("Order Code does not exist!");
-            return;
-        }
-
-        System.out.println("Current Order Details: " + foundOrder);
-
-        String newCusId = inputter.inputAndLoop("Enter new Customer ID (leave blank to keep old): ", Acceptable.CUS_ID_VALID);
-        if (!newCusId.isEmpty()) {
-            if (customerList.searchById(newCusId) == null) {
-                System.out.println("New Customer ID does not exist! Keeping the old one.");
-            } else {
-                foundOrder.setCustomerId(newCusId);
+        String choice;
+        do {
+            System.out.println("--- Update Order Information ---");
+            if (orderList.isEmpty()) {
+                System.out.println("No orders available to update.");
+                return;
             }
-        }
 
-        int newTables = inputter.IntAndLoop("Enter new number of tables (0 to keep old): ", Acceptable.POSITIVE_INT_VALID);
-        if (newTables > 0) {
-            foundOrder.setNumOfTables(newTables);
-        }
+            System.out.println("Existing Orders:");
+            orderList.showAll();
 
-//        String newDate = inputter.inputAndLoop("Enter new date (must be a valid date in the future)", Acceptable)
-        System.out.println("Order updated successfully!");
-        System.out.println("Updated Order: " + foundOrder);
-        System.out.println("Customer updated successfully.");
+            String code = inputter.getString("Enter the Order Code from the list above: ");
+            Order foundOrder = orderList.searchById(code);
+
+            if (foundOrder == null) {
+                System.out.println("Order Code does not exist!");
+                return;
+            }
+
+            System.out.println("Current Order Details: " + foundOrder);
+            String newCodemenu = inputter.getString("Enter new code of set menu (leave blank to keep old): ");
+            if (!newCodemenu.isEmpty()) {
+                 SetMenu newMenuId = menuList.get(newCodemenu);
+                if (newMenuId == null) {
+                    System.out.println("Menu id not found!");
+                } else {
+                    foundOrder.setMenuId(newCodemenu);                    
+                    double newPrice = newMenuId.getPrice();
+                    double newTotal = newPrice * foundOrder.getNumOfTables();
+                    foundOrder.setPrice(newPrice);
+                    foundOrder.setTotalCost(newTotal);
+                    System.out.println("Menu updated successfully!");
+                }
+            }
+
+            
+            int newTables = inputter.IntAndLoop("Enter new number of tables (0 to keep old): ", Acceptable.POSITIVE_INT_VALID);
+            if (newTables > 0) {
+                foundOrder.setNumOfTables(newTables);
+            }
+
+            Date newDate = inputter.getDate("Enter new event date (leave blank to keep old)");
+            if (newDate != null) {
+                foundOrder.setEventDate(newDate);
+            }
+            System.out.println("Order updated successfully!");
+            System.out.println("Code of Set Menu: " + foundOrder.getMenuId());
+             SetMenu newMenuId = menuList.get(foundOrder.getMenuId());
+            System.out.println("Set menu name   : " + newMenuId.getMenuName());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            System.out.println("Event date      : " + sdf.format(foundOrder.getEventDate()));
+            System.out.printf("Price            : %,.0f Vnd\n", foundOrder.getPrice());
+            System.out.println("Ingredients :");
+            String raw = newMenuId.getIngredients().replace("\"", "");
+            String[] groups = raw.split("#");
+            for (String group : groups) {
+                System.out.println(" " + group.trim());
+            }
+            System.out.println("-------------------------------------------------------");
+            System.out.printf("Total cost      : %,.0f Vnd\n", foundOrder.getPrice());
+            System.out.println("-------------------------------------------------------");
+            System.out.println("Customer updated successfully.");
+            choice = inputter.getString("choose Y(continue Update)or N (exist): ");
+
+        } while (choice.equalsIgnoreCase("y"));
 
     }
 
@@ -194,6 +238,7 @@ public class FeastController {
 
     public void displayAllCustomers() {
         System.out.println("\n--- CUSTOMER LIST ---");
+        
         customerList.showAll();
     }
 

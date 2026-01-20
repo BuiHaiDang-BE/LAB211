@@ -15,26 +15,46 @@ import java.util.Objects;
  */
 public class Order implements Serializable {
 
-    public String orderCode;
-    public String customerId;
-    public String menuId;
-    public int numOfTables;
-    public Date eventDate;
+    private String orderCode;
+    private String customerId;
+    private String menuId;
+    private int numOfTables;
+    private Date eventDate;
+    private double price;
+    private double totalCost;
 
     public Order() {
         this.orderCode = generateOrderCode();
     }
 
-    public Order( String customerId, String menuId, int numOfTables, Date eventDate) {
+    public Order(String customerId, String menuId, int numberOfTables, Date eventDate, double price, double total) {
         this.orderCode = generateOrderCode();
         this.customerId = customerId;
         this.menuId = menuId;
-        this.numOfTables = numOfTables;
+        this.numOfTables = numberOfTables;
         this.eventDate = eventDate;
+        this.price = price;
+        this.totalCost = total;
     }
 
-    public Order(String cId, Date date, String cId0, String mId, double price, int tables, double cost) {
-        
+    public Order(double totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public double getTotalCost() {
+        return totalCost;
     }
 
     private String generateOrderCode() {
@@ -89,23 +109,26 @@ public class Order implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         final Order other = (Order) obj;
-        return Objects.equals(this.customerId, other.customerId) &&
-               Objects.equals(this.menuId, other.menuId) &&
-               Objects.equals(this.eventDate, other.eventDate);
+        return Objects.equals(this.customerId, other.customerId)
+                && Objects.equals(this.menuId, other.menuId)
+                && Objects.equals(this.eventDate, other.eventDate);
     }
-//    @Override
-//    public String toString() {
-//        return "order{" + "orderCode=" + orderCode + ", customerId=" + customerId + ", provide=" + provide + ", menuId=" + menuId + ", numOfTables=" + numOfTables + ", eventDate=" + eventDate + '}';
-//    }
-    
-    @Override
-    public String toString() {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        return String.format("| %-15s | %-10s | %-10s | %-10s | %2d |", 
-                             orderCode, sdf.format(eventDate), customerId, menuId, numOfTables);
-    }
+
+  @Override
+public String toString() {
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    // Đúng: %-15s (Căn lề trái 15)
+    // Sai: % 15s (Dư khoảng trắng giữa % và 15)
+    return String.format("| %-15s | %-10s | %-10s | %-10s | %4d | %15,.0f | %15,.0f |", 
+                         orderCode, sdf.format(eventDate), customerId, menuId, 
+                         numOfTables, price, totalCost);
+}
 
 }

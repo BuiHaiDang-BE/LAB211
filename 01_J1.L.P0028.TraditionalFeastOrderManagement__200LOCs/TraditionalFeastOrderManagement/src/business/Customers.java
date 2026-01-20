@@ -88,9 +88,13 @@ public class Customers extends ArrayList<Customer> implements Workable<Customer>
             System.out.println("No customers found.");
             return;
         }
-        for (Customer c : this) {
-            System.out.println(c);
-        }
+        System.out.println("-------------------------------------------------------------------------------------------");
+    System.out.printf("| %-10s | %-20s | %-15s | %-30s |\n", "ID", "Name", "Phone", "Email");
+    System.out.println("-------------------------------------------------------------------------------------------");
+    for (Customer c : this) {
+        System.out.println(c);
+    }
+    System.out.println("-------------------------------------------------------------------------------------------");
     }
 
     public void readFromFile() {

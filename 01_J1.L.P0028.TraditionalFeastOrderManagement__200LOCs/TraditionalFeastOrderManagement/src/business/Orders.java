@@ -47,7 +47,19 @@ public class Orders extends HashSet<Order> implements Workable<Order> {
 
     @Override
     public void showAll() {
-        this.forEach(System.out::println);
+        if (this.isEmpty()) {
+        System.out.println("List is empty");
+        return;
+    }
+   
+    System.out.println("------------------------------------------------------------------------------------------------------------------");
+    System.out.printf("| %-15s | %-10s | %-10s | %-10s | %-4s | %-15s | %-15s |\n", 
+                      "Order Code", "Date", "Cus ID", "Menu ID", "Tabs", "Price", "Total Cost");
+    System.out.println("------------------------------------------------------------------------------------------------------------------");
+
+    this.forEach(System.out::println);
+
+    System.out.println("------------------------------------------------------------------------------------------------------------------");
     }
 
     public void readFromFile() {

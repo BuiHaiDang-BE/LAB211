@@ -62,7 +62,7 @@ public class Customer implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("| %-10s | %-20s | %-12s | %-25s |", id, name, phone, email);
+        return String.format("| %-10s | %-20s | %-15s | %-30s |", id, name, phone, email);
     }
 }
 //    @Override
