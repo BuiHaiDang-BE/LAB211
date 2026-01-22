@@ -42,18 +42,40 @@ public class FeastController {
     }
 
     public void registerCustomer() {
-        String choose;
+        String choose="";
         do {
+            
             String id = inputter.inputAndLoop("Enter Customer ID: ", Acceptable.CUS_ID_VALID);
             if (customerList.searchById(id) != null) {
                 System.out.println("ID already exists!");
-            } else {
-                String name = inputter.inputAndLoop("Enter Name: ", Acceptable.NAME_VALID);
-                String phone = inputter.inputAndLoop("Enter Phone: ", Acceptable.PHONE_VALID);
-                String email = inputter.inputAndLoop("Enter Email: ", Acceptable.EMAIL_VALID);
-                customerList.addNew(new Customer(id, name, phone, email));
+                continue; 
             }
-            choose = inputter.getString("choose Y(continue register)or N (exist): ");
+
+            String name = inputter.inputAndLoop("Enter Name: ", Acceptable.NAME_VALID);
+
+            String phone;
+            while (true) {
+                phone = inputter.inputAndLoop("Enter Phone: ", Acceptable.PHONE_VALID);
+                if (customerList.searchByPhone(phone) != null) {
+                    System.out.println("This phone number is already registered!");
+                } else {
+                    break; 
+                }
+            }
+
+            String email;
+            while (true) {
+                email = inputter.inputAndLoop("Enter Email: ", Acceptable.EMAIL_VALID);
+                if (customerList.searchByEmail(email) != null) {
+                    System.out.println("This email is already registered!");
+                } else {
+                    break; 
+                }
+            }
+
+            customerList.addNew(new Customer(id, name, phone, email));
+
+            choose = inputter.getString("Choose Y (continue registering) or N (exit): ");
 
         } while (choose.equalsIgnoreCase("Y"));
     }
@@ -81,7 +103,6 @@ public class FeastController {
 
     public void placeFeastOrder() {
 
-    
         System.out.println("--- Place a Feast Order ---");
         if (customerList.isEmpty()) {
             System.out.println("Cusomer list is empty, please register");
@@ -116,9 +137,9 @@ public class FeastController {
             return;
         }
         {
-            Order newOrder = new Order(cId, mId, tables, eventDate,price,total);
+            Order newOrder = new Order(cId, mId, tables, eventDate, price, total);
             orderList.addNew(newOrder);
-            
+
             System.out.println("-------------------------------------------------------");
             System.out.println("Customer order information [Order ID: ]" + newOrder.getOrderCode());
             System.out.println("-------------------------------------------------------");
@@ -132,7 +153,7 @@ public class FeastController {
             System.out.println("Set menu name   : " + foundMenu.getMenuName());
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             System.out.println("Event date      : " + sdf.format(newOrder.getEventDate()));
-            System.out.printf("Price            : %,.0f Vnd\n", foundMenu.getPrice());
+            System.out.printf("Price : %,.0f Vnd\n", foundMenu.getPrice());
             System.out.println("Ingredients :");
             String raw = foundMenu.getIngredients().replace("\"", "");
             String[] groups = raw.split("#");
@@ -168,32 +189,32 @@ public class FeastController {
             System.out.println("Current Order Details: " + foundOrder);
             String newCodemenu = inputter.getString("Enter new code of set menu (leave blank to keep old): ");
             if (!newCodemenu.isEmpty()) {
-                 SetMenu newMenuId = menuList.get(newCodemenu);
+                SetMenu newMenuId = menuList.get(newCodemenu);
                 if (newMenuId == null) {
                     System.out.println("Menu id not found!");
                 } else {
-                    foundOrder.setMenuId(newCodemenu);                    
+
+                    foundOrder.setMenuId(newCodemenu);
                     double newPrice = newMenuId.getPrice();
-                    double newTotal = newPrice * foundOrder.getNumOfTables();
+
                     foundOrder.setPrice(newPrice);
-                    foundOrder.setTotalCost(newTotal);
+
                     System.out.println("Menu updated successfully!");
                 }
             }
-
-            
             int newTables = inputter.IntAndLoop("Enter new number of tables (0 to keep old): ", Acceptable.POSITIVE_INT_VALID);
             if (newTables > 0) {
                 foundOrder.setNumOfTables(newTables);
             }
-
+            double newTotal = foundOrder.getPrice() * foundOrder.getNumOfTables();
+            foundOrder.setTotalCost(newTotal);
             Date newDate = inputter.getDate("Enter new event date (leave blank to keep old)");
             if (newDate != null) {
                 foundOrder.setEventDate(newDate);
             }
             System.out.println("Order updated successfully!");
             System.out.println("Code of Set Menu: " + foundOrder.getMenuId());
-             SetMenu newMenuId = menuList.get(foundOrder.getMenuId());
+            SetMenu newMenuId = menuList.get(foundOrder.getMenuId());
             System.out.println("Set menu name   : " + newMenuId.getMenuName());
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             System.out.println("Event date      : " + sdf.format(foundOrder.getEventDate()));
@@ -205,7 +226,7 @@ public class FeastController {
                 System.out.println(" " + group.trim());
             }
             System.out.println("-------------------------------------------------------");
-            System.out.printf("Total cost      : %,.0f Vnd\n", foundOrder.getPrice());
+            System.out.printf("Total cost : %,.0f Vnd\n", foundOrder.getTotalCost());
             System.out.println("-------------------------------------------------------");
             System.out.println("Customer updated successfully.");
             choice = inputter.getString("choose Y(continue Update)or N (exist): ");
@@ -238,7 +259,7 @@ public class FeastController {
 
     public void displayAllCustomers() {
         System.out.println("\n--- CUSTOMER LIST ---");
-        
+
         customerList.showAll();
     }
 

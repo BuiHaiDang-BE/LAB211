@@ -8,13 +8,12 @@ package business;
  *
  * @author Bui_Hai_Dang
  */
-import java.util.List;
 
 public interface Workable<T> {
 
-    void addNew(T x); // Thêm mới một đối tượng 
+    void addNew(T x); 
 
-    void update(T x); // Cập nhật thông tin đối tượng 
+    void update(T x);
 
     T searchById(String id);
 

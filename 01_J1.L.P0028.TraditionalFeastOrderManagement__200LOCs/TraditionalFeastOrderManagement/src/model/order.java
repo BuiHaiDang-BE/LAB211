@@ -121,14 +121,16 @@ public class Order implements Serializable {
                 && Objects.equals(this.eventDate, other.eventDate);
     }
 
-  @Override
-public String toString() {
-    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-    // Đúng: %-15s (Căn lề trái 15)
-    // Sai: % 15s (Dư khoảng trắng giữa % và 15)
-    return String.format("| %-15s | %-10s | %-10s | %-10s | %4d | %15,.0f | %15,.0f |", 
-                         orderCode, sdf.format(eventDate), customerId, menuId, 
-                         numOfTables, price, totalCost);
-}
+    @Override
+    public String toString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        String formattedPrice = String.format("%,.0f", price);
+        String formattedTotal = String.format("%,.0f", totalCost);
+
+        return String.format("| %-15s | %-10s | %-10s | %-10s | %4d | %15s | %15s |",
+                orderCode, sdf.format(eventDate), customerId, menuId,
+                numOfTables, formattedPrice, formattedTotal);
+    }
 
 }

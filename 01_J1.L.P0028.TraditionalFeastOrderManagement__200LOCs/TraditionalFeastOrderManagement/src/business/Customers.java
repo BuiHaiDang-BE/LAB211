@@ -30,32 +30,27 @@ public class Customers extends ArrayList<Customer> implements Workable<Customer>
 
     @Override
     public void update(Customer x) {
-    Customer found = searchById(x.getId());
-    if (found != null) {
+        Customer found = searchById(x.getId());
+        if (found != null) {
 
-        
-        String newName = inputter.inputAndLoop("Enter new name: ", Acceptable.NAME_VALID);
-        if (!newName.isEmpty()) {
-            x.setName(newName);
+            String newName = inputter.inputAndLoop("Enter new name: ", Acceptable.NAME_VALID);
+            if (!newName.isEmpty()) {
+                x.setName(newName);
+            }
+
+            String newPhone = inputter.inputAndLoop("Enter new phone: ", Acceptable.PHONE_VALID);
+            if (!newPhone.isEmpty()) {
+                x.setPhone(newPhone);
+            }
+
+            String newEmail = inputter.inputAndLoop("Enter new email: ", Acceptable.EMAIL_VALID);
+            if (!newEmail.isEmpty()) {
+                x.setEmail(newEmail);
+            }
+
+            System.out.println("Customer updated successfully.");
         }
-
-        
-        String newPhone = inputter.inputAndLoop("Enter new phone: ", Acceptable.PHONE_VALID);
-        if (!newPhone.isEmpty()) {
-            x.setPhone(newPhone);
-        }
-
-       
-        String newEmail = inputter.inputAndLoop("Enter new email: ", Acceptable.EMAIL_VALID);
-        if (!newEmail.isEmpty()) {
-            x.setEmail(newEmail);
-        }
-
-  
-        System.out.println("Customer updated successfully.");
     }
-}
-
 
     @Override
     public Customer searchById(String id) {
@@ -67,19 +62,55 @@ public class Customers extends ArrayList<Customer> implements Workable<Customer>
         return null;
     }
 
+    public Customer searchByPhone(String phone) {
+        for (Customer c : this) {
+            if (c.getPhone().equalsIgnoreCase(phone)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public Customer searchByEmail(String email) {
+        for (Customer c : this) {
+            if (c.getEmail().equalsIgnoreCase(email)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
     public void searchByName(String name) {
         List<Customer> equallName = new ArrayList<>();
         name = name.trim().toLowerCase();
         for (Customer o : this) {
-            if (o.getName().trim().toLowerCase().contains(name)) {
+            String[] partName = o.getName().toLowerCase().split("\\s+");
+            boolean found = false;
+            for (String part : partName) {
+                if (part.startsWith(name)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
                 equallName.add(o);
             }
         }
+        if (equallName.isEmpty()) {
+            System.out.println("No one matches the search criteria!");
+            return;
+        }
         Collections.sort(equallName, (a, b) -> a.getName().compareTo(b.getName()));
 
+        System.out.println("Matching Customers: " + name.toUpperCase());
+        System.out.println("-------------------------------------------------------------------------------------------");
+        System.out.printf("| %-10s | %-20s | %-15s | %-30s |\n", "ID", "Name", "Phone", "Email");
+        System.out.println("-------------------------------------------------------------------------------------------");
         for (Customer customer : equallName) {
-            customer.toString();
+            System.out.println(customer);
         }
+        System.out.println("-------------------------------------------------------------------------------------------");
+
     }
 
     @Override
@@ -89,24 +120,23 @@ public class Customers extends ArrayList<Customer> implements Workable<Customer>
             return;
         }
         System.out.println("-------------------------------------------------------------------------------------------");
-    System.out.printf("| %-10s | %-20s | %-15s | %-30s |\n", "ID", "Name", "Phone", "Email");
-    System.out.println("-------------------------------------------------------------------------------------------");
-    for (Customer c : this) {
-        System.out.println(c);
-    }
-    System.out.println("-------------------------------------------------------------------------------------------");
+        System.out.printf("| %-10s | %-20s | %-15s | %-30s |\n", "ID", "Name", "Phone", "Email");
+        System.out.println("-------------------------------------------------------------------------------------------");
+        for (Customer c : this) {
+            System.out.println(c);
+        }
+        System.out.println("-------------------------------------------------------------------------------------------");
     }
 
     public void readFromFile() {
         this.clear();
         this.addAll(FileUtils.readFile(this.pathFile));
-       
+
     }
 
     public void saveToFile() {
         FileUtils.saveToFile(this, this.pathFile);
-       
+
     }
 
-   
 }

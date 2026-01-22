@@ -53,16 +53,27 @@ public class Inputter {
     }
 
     public Date getDate(String mess) {
-
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         sdf.setLenient(false);
-        while(true){
-            String input = getString(mess + "(dd/MM/yyyy): ");
-            if(input.isEmpty()) return null;
+
+        while (true) {
+            
+            String input = getString(mess + " (dd/MM/yyyy): ");
+            if (input.isEmpty()) {
+                return null;
+            }
+
             try {
-                return (Date) sdf.parse(input);
+                Date inputDate = sdf.parse(input);
+                Date today = new Date();
+                if (inputDate.before(today)) {
+                    System.out.println("The event date must be in the future. Please try again!");
+                    continue;
+                }
+
+                return inputDate;
             } catch (ParseException e) {
-                System.out.println("Date is inValid, please redo: ");
+                System.out.println("Invalid date format or non-existent date. Please redo: ");
             }
         }
     }
