@@ -4,23 +4,25 @@
  */
 package Models;
 
+import java.util.List;
+
 /**
  *
  * @author Bui_Hai_Dang
  */
-public class developer {
+public class Developer {
     private String devID;
     private String fullName;
-    private String programLanguages;
+    private List<String> languages;
     private int salaryUsd;
 
-    public developer() {
+    public Developer() {
     }
 
-    public developer(String devID, String fullName, String programLanguages, int salaryUsd) {
+    public Developer(String devID, String fullName, List<String> languages, int salaryUsd) {
         this.devID = devID;
         this.fullName = fullName;
-        this.programLanguages = programLanguages;
+        this.languages = languages;
         this.salaryUsd = salaryUsd;
     }
 
@@ -40,27 +42,26 @@ public class developer {
         this.fullName = fullName;
     }
 
-    public String getProgramLanguages() {
-        return programLanguages;
+    public List<String> getLanguages() {
+        return languages;
     }
 
-    public void setProgramLanguages(String programLanguages) {
-        this.programLanguages = programLanguages;
+    public void setLanguages(List<String> languages) {
+        this.languages = languages;
     }
 
-    public double getSalaryUsd() {
+    public int getSalaryUsd() {
         return salaryUsd;
     }
 
     public void setSalaryUsd(int salaryUsd) {
         this.salaryUsd = salaryUsd;
     }
-    
-   
+
 
     @Override
     public String toString() {
-        return String.format("| -10%s | -25%s | -20%s | %d |",getDevID(),getFullName(),getProgramLanguages(),getSalaryUsd());
+        return String.format("| -10%s | -25%s | -20%s | %d |",getDevID(),getFullName(),getLanguages(),getSalaryUsd());
     }
     
 }
